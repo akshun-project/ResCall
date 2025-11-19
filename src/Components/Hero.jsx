@@ -20,7 +20,7 @@ export default function Hero() {
         `}
       </style>
 
-      <section className="flex flex-col items-center text-white text-sm relative bg-[#0B0F19] overflow-hidden pb-24">
+      <section className="flex flex-col items-center text-white text-sm relative bg-[#0B0F19] overflow-hidden pb-20">
 
         {/* GRADIENT RING BACKGROUND */}
         <svg
@@ -54,25 +54,25 @@ export default function Hero() {
         </svg>
 
         {/* NAVBAR */}
-        <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur">
-          
+        <nav className="z-50 sticky flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur">
+
           {/* LOGO */}
-          <a href="/" className="text-3xl font-extrabold flex items-center tracking-tight">
-            <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent font-bold">
+          <a href="/" className="text-3xl font-extrabold flex items-center  tracking-tight">
+            <span className="bg-gradient-to-r font-semibold from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               Res
             </span>
             <span className="text-slate-300 font-medium">Call</span>
           </a>
 
-          {/* DESKTOP MENU */}
+          {/* DESKTOP NAV LINKS */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="/" className="hover:text-slate-300 transition">Home</a>
+             <a href="/" className="hover:text-slate-300 transition">Home</a>
             <a href="#tools" className="hover:text-slate-300 transition">Tools</a>
             <a href="#features" className="hover:text-slate-300 transition">Features</a>
             <a href="#about" className="hover:text-slate-300 transition">About</a>
           </div>
 
-          {/* AUTH BUTTONS */}
+          {/* AUTH DESKTOP */}
           <div className="hidden md:flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
@@ -93,7 +93,7 @@ export default function Hero() {
             </SignedIn>
           </div>
 
-          {/* MOBILE MENU ICON */}
+          {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setOpenMenu(true)}
             className="md:hidden active:scale-90 transition"
@@ -109,10 +109,10 @@ export default function Hero() {
         {/* MOBILE OVERLAY MENU */}
         {openMenu && (
           <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-lg flex flex-col items-center justify-center gap-8 text-lg">
-            <a href="/" onClick={() => setOpenMenu(false)}>Home</a>
+
             <a href="#tools" onClick={() => setOpenMenu(false)}>Tools</a>
             <a href="#features" onClick={() => setOpenMenu(false)}>Features</a>
-            <a href="#about" onClick={() => setOpenMenu(false)}>About</a>
+            <a href="#faq" onClick={() => setOpenMenu(false)}>FAQ</a>
 
             <SignedOut>
               <SignInButton mode="modal">
@@ -141,12 +141,12 @@ export default function Hero() {
         )}
 
         {/* STATUS TAG */}
-        <div className="flex items-center mt-24 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2">
+        <div className="flex items-center mt-28 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2">
           <div className="size-2.5 bg-green-500 rounded-full" />
           <span>AI-powered tools for your career</span>
         </div>
 
-        {/* HERO TITLE */}
+        {/* HERO HEADING */}
         <h1 className="text-center text-5xl md:text-6xl font-bold leading-tight mt-4 max-w-3xl">
           Your{" "}
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
@@ -158,8 +158,7 @@ export default function Hero() {
 
         {/* SUBTEXT */}
         <p className="text-center text-base max-w-lg mt-3 text-gray-300">
-          Analyze your resume, compare job descriptions, discover skill gaps,
-          and get a personalized career roadmap.
+          Analyze your resume, compare job descriptions, discover skill gaps, and get a personalized career roadmap.
         </p>
 
         {/* CTA BUTTONS */}
