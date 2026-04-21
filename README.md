@@ -78,7 +78,6 @@ ResCall is an intelligent web application that helps users improve their resumes
 
 ## 📌 Project Status
 
-✅ Completed
 🚀 Continuously improving
 
 ---
