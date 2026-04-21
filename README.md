@@ -1,88 +1,72 @@
-# 🚀 ResCall – AI-Powered Resume & Job Match Assistant
+# 🚀 ResCall – AI-Powered Resume & Interview Assistant
 
-ResCall is a smart resume analysis and career guidance platform built to help students improve their chances of getting shortlisted in modern hiring systems.
-
-It analyzes resumes, compares them with job descriptions, and provides actionable insights like ATS score, missing keywords, skill gaps, and a personalized learning roadmap.
+ResCall is an intelligent web application that helps users improve their resumes, match jobs, and prepare for interviews using AI.
 
 ---
 
-## 🔥 Key Features
+## ✨ Features
 
-* 📄 **Resume Analyzer**
-  Parses and analyzes resume content from PDF/DOCX files.
+* 📄 **Resume Analyzer (ATS Score)**
 
-* 📊 **ATS Score Engine**
-  Evaluates how well a resume performs in Applicant Tracking Systems.
+  * Upload resume and get ATS score
+  * AI-based suggestions for improvement
 
-* 🎯 **Job Description Matching**
-  Matches resume with job descriptions using semantic similarity.
+* 🎯 **Job Matcher**
 
-* 🔍 **Missing Keywords Detection**
-  Identifies important keywords missing from the resume.
+  * Matches your resume with relevant job roles
+  * Suggests improvements to increase match score
 
-* 📉 **Skill Gap Analysis**
-  Highlights gaps between current skills and job requirements.
+* 🧠 **Skill Path Generator**
 
-* 🛤 **Learning Roadmap Generator**
-  Suggests a structured path to improve skills and become job-ready.
+  * Recommends skills based on your profile
+  * Helps plan career growth
 
----
+* 🎤 **Mock Interview**
 
-## 🧠 How It Works
+  * AI-generated interview questions
+  * Practice in real-time
 
-1. Upload resume
-2. Extract and preprocess text
-3. Run ATS scoring algorithm
-4. Match resume with job description
-5. Detect missing keywords & skill gaps
-6. Generate personalized roadmap
-7. Display final report
+* 📊 **Dashboard**
+
+  * Track performance and progress
+  * View past results
 
 ---
 
-## ⚙️ Tech Stack
+## 🛠️ Tech Stack
 
-* Frontend: HTML, CSS, JavaScript
-* Backend: Node.js, Express.js
-* Database: MongoDB
-* Core Concepts: NLP, Semantic Similarity, Keyword Extraction
-
----
-
-## 📊 Output
-
-* ATS Score
-* Job Match Percentage
-* Missing Keywords
-* Skill Gap Report
-* Personalized Learning Roadmap
+* **Frontend:** React.js, Vite
+* **Styling:** CSS / Tailwind / Custom UI
+* **Animations:** GSAP
+* **Backend :** Node.js / Express / MongoDB
+* **AI Integration:** Gemini API
+* **Deployment:** Vercel
 
 ---
 
-## 🎯 Problem It Solves
 
-Many candidates get rejected not because of lack of skills, but due to poor resume optimization for ATS systems.
+## 🌐 Live Demo
 
-ResCall bridges this gap by providing **data-driven insights** to improve resume quality and align it with industry requirements.
-
----
-
-## 💡 Key Highlights
-
-* Built an end-to-end resume analysis system
-* Implemented ATS scoring logic
-* Designed semantic matching between resume and job description
-* Created skill-gap detection and roadmap generation system
-* Focused on real-world hiring challenges
+👉 https://res-call-seven.vercel.app/
 
 ---
 
-## 🚀 Future Improvements
 
-* Real-time job integration
-* Resume builder feature
-* Advanced recommendation system
-* Multi-language support
+## 🧠 What Makes This Project Unique?
+
+* Combines multiple AI tools in one platform
+* Real-time resume feedback
+* Integrated interview preparation system
+* Clean UI with smooth animations
+* Focus on practical career improvement
+
+---
+
+## 📌 Future Improvements
+
+* Backend authentication system
+* Real-time voice-based interviews
+* Advanced analytics dashboard
 
 ---
 
