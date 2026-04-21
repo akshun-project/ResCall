@@ -1,27 +1,27 @@
- import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { FileText, BrainCircuit, Gauge, Sparkles } from "lucide-react";
 
 export default function FeaturesSection() {
   const features = [
     {
-      icon: <FileText className="text-purple-400" size={36} />,
-      title: "AI-Powered Resume Understanding",
-      desc: "ResCall deeply reads your resume like a recruiter—extracting skills, context, experience & strengths.",
+      icon: <FileText className="text-indigo-400" size={36} />,
+      title: "Resume Analysis & ATS Score",
+      desc: "Upload your resume and instantly get ATS score, missing keywords, and improvement suggestions.",
     },
     {
-      icon: <Gauge className="text-purple-400" size={36} />,
-      title: "Smart ATS Optimization",
-      desc: "Automatically boosts your resume for Applicant Tracking Systems with keyword & structure improvement.",
+      icon: <BrainCircuit className="text-green-400" size={36} />,
+      title: "Interview Preparation System",
+      desc: "Get personalized interview questions based on your resume with hints and answers for guided learning.",
     },
     {
-      icon: <BrainCircuit className="text-purple-400" size={36} />,
-      title: "Job Match Intelligence",
-      desc: "Analyze job descriptions and instantly see your match score, gaps, and improvements.",
+      icon: <Gauge className="text-yellow-400" size={36} />,
+      title: "Skill Gap & Career Roadmap",
+      desc: "Identify missing skills and follow a structured learning path to improve your placement readiness.",
     },
     {
-      icon: <Sparkles className="text-purple-400" size={36} />,
-      title: "Skill Gap Detection",
-      desc: "Find missing skills instantly and generate a personalized learning roadmap for your target job role.",
+      icon: <Sparkles className="text-pink-400" size={36} />,
+      title: "AI Mock Interview Practice",
+      desc: "Simulate real interviews with timer, answer tracking, and AI feedback to improve performance.",
     },
   ];
 
@@ -37,10 +37,11 @@ export default function FeaturesSection() {
         </p>
 
         <h2 className="text-3xl font-semibold mt-4 text-white">
-          Why  <span className="bg-gradient-to-r font-semibold from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-              Res
-            </span>
-            <span className="text-slate-300 font-medium">Call</span> Stands Out
+          Why{" "}
+          <span className="bg-gradient-to-r font-semibold from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            Res
+          </span>
+          <span className="text-slate-300 font-medium">Call</span> Stands Out
         </h2>
 
         <p className="mt-2 text-slate-300 max-w-xl mx-auto">

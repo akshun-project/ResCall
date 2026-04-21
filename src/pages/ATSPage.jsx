@@ -1,109 +1,45 @@
- import { useState } from "react";
-import { motion } from "framer-motion";
-import { Upload } from "lucide-react";
-import mammoth from "mammoth";
-import { GlobalWorkerOptions, getDocument } from "pdfjs-dist/build/pdf";
-import { ai } from "../gemini/geminiClient";
-
-GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+import { useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { getData } from "../utils/storage";
 
 export default function ATSPage() {
-  const [resumeText, setResumeText] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [score, setScore] = useState(null);
-  const [keywords, setKeywords] = useState([]);
-  const [fixes, setFixes] = useState([]);
+  const { user } = useUser();
+  const navigate = useNavigate();
 
-  // ---------------- PDF EXTRACTION ----------------
-  const extractPDF = async (file) => {
-    const buffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: buffer }).promise;
-    let text = "";
+  const userId = user?.id;
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      text += content.items.map((t) => t.str).join(" ") + "\n";
-    }
+  if (!userId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
 
-    return text;
-  };
+  const data = getData(`aiData_${userId}`);
 
-  // ---------------- DOCX EXTRACTION ----------------
-  const extractDOCX = async (file) => {
-    const buffer = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
-    return result.value;
-  };
+  if (!data) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-white">
+        <h2 className="text-xl font-semibold mb-2">No Resume Found</h2>
+        <p className="text-gray-400 mb-4 text-sm">
+          Upload your resume to see ATS analysis
+        </p>
 
-  // ---------------- HANDLE UPLOAD ----------------
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+        <button
+          onClick={() => navigate("/resume")}
+          className="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-lg"
+        >
+          Upload Resume →
+        </button>
+      </div>
+    );
+  }
 
-    let extracted = "";
+  const score = data?.ats?.score || 0;
+  const keywords = data?.ats?.missing_keywords || [];
+  const fixes = data?.ats?.quick_fixes || [];
 
-    if (file.type === "application/pdf") {
-      extracted = await extractPDF(file);
-    } else if (file.type.includes("wordprocessingml")) {
-      extracted = await extractDOCX(file);
-    } else {
-      alert("Upload only PDF or DOCX files.");
-      return;
-    }
-
-    setResumeText(extracted);
-  };
-
-  // ---------------- ANALYZE ATS SCORE ----------------
-  const checkATS = async () => {
-    if (!resumeText.trim()) return alert("Upload resume first.");
-
-    setLoading(true);
-    setScore(null);
-    setKeywords([]);
-    setFixes([]);
-
-    try {
-      const prompt = `
-        You are an ATS scoring engine.
-        Analyze this resume and return ONLY a JSON object:
-
-        {
-          "score": number (0-100),
-          "missing_keywords": ["skill1","skill2"],
-          "quick_fixes": ["short suggestion 1","short suggestion 2"]
-        }
-
-        Resume:
-        ${resumeText}
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-      });
-
-      const raw =
-        response.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-
-      const cleaned = raw.replace(/```json|```/g, "");
-
-      const json = JSON.parse(cleaned);
-
-      setScore(json.score);
-      setKeywords(json.missing_keywords || []);
-      setFixes(json.quick_fixes || []);
-    } catch (err) {
-      console.error(err);
-      alert("Error calculating ATS score.");
-    }
-
-    setLoading(false);
-  };
-
-  // ---------------- SCORE COLOR ----------------
   const getColor = (num) => {
     if (num >= 80) return "text-green-400";
     if (num >= 50) return "text-yellow-400";
@@ -111,123 +47,81 @@ export default function ATSPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white px-6 md:px-20 py-24">
-      {/* PAGE TITLE */}
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-semibold mb-2"
-      >
-        ATS Score Checker
-      </motion.h1>
-
-      <p className="text-gray-300 mb-10 max-w-xl">
-        Upload your resume to get a fast, accurate ATS score with missing
-        keywords and quick fixes.
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-10">
-        {/* ---------------- LEFT: UPLOAD ---------------- */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="p-8 rounded-2xl bg-white/5 border border-white/10 shadow-xl"
-        >
-          <h2 className="text-xl font-semibold mb-4">Upload Resume</h2>
-
-          <label
-            htmlFor="fileUpload"
-            className="flex flex-col items-center justify-center w-full h-56
-              rounded-xl cursor-pointer bg-white/5 border border-white/10 
-              hover:bg-white/10 transition"
-          >
-            <Upload size={42} className="mb-3 opacity-70" />
-
-            {resumeText ? (
-              <span className="text-green-400 font-medium">
-                File uploaded ✔
-              </span>
-            ) : (
-              <span className="text-gray-300">
-                Click to upload PDF or DOCX
-              </span>
-            )}
-
-            <input
-              type="file"
-              id="fileUpload"
-              className="hidden"
-              accept=".pdf,.docx"
-              onChange={handleUpload}
-            />
-          </label>
-
-          {/* BUTTON WITH LOADER */}
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0F19] via-[#0B0F19] to-indigo-900/20 text-white px-4 py-10">
+      <div className="max-w-4xl mx-auto">
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-8">
           <button
-            onClick={checkATS}
-            className="w-full mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 
-            rounded-lg active:scale-95 transition flex items-center justify-center gap-3"
+            onClick={() => navigate("/")}
+            className="text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg"
           >
-            {loading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                Checking…
-              </>
-            ) : (
-              "Get ATS Score"
-            )}
+            ← Back
           </button>
-        </motion.div>
 
-        {/* ---------------- RIGHT: RESULT ---------------- */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="p-8 rounded-2xl bg-white/5 border border-white/10 shadow-xl"
-        >
-          <h2 className="text-xl font-semibold mb-4">Score Breakdown</h2>
+          <button
+            onClick={() => navigate("/resume")}
+            className="text-sm bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg"
+          >
+            Re-analyze →
+          </button>
+        </div>
 
-          {!score && !loading && (
-            <p className="text-gray-400">Upload a resume to view score.</p>
-          )}
+        <h1 className="text-3xl md:text-4xl font-semibold mb-2">
+          ATS Optimization 📊
+        </h1>
 
-          {/* SCORE UI */}
-          {score !== null && (
-            <div className="text-center">
-              <h1
-                className={`text-6xl font-bold mb-4 ${getColor(score)}`}
-              >
-                {score}
-              </h1>
-              <p className="text-gray-400 mb-6">ATS Score</p>
+        <p className="text-gray-400 mb-8 text-sm">
+          Improve your resume to pass Applicant Tracking Systems
+        </p>
 
-              {/* Missing Keywords */}
-              <h3 className="text-lg font-semibold mb-2">Missing Keywords</h3>
-              {keywords.length ? (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {keywords.map((kw, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-white/10 border border-white/10 rounded-full text-sm"
-                    >
-                      {kw}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-400 mb-6">None 🎉</p>
-              )}
+        {/* SCORE CARD */}
+        <div className="bg-[#0F172A] border border-slate-800 rounded-xl p-6 mb-8 text-center">
+          <h2 className="text-gray-400 text-sm mb-2">Your ATS Score</h2>
 
-              {/* Quick Fixes */}
-              <h3 className="text-lg font-semibold mb-2">Quick Fixes</h3>
-              <ul className="text-gray-300 space-y-2 text-sm">
-                {fixes.map((f, i) => (
-                  <li key={i}>• {f}</li>
+          <h1 className={`text-6xl font-bold ${getColor(score)}`}>{score}</h1>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-800 h-2 rounded-full mt-4">
+            <div
+              className="bg-indigo-500 h-2 rounded-full"
+              style={{ width: `${score}%` }}
+            />
+          </div>
+        </div>
+
+        {/* GRID */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* KEYWORDS */}
+          <div className="bg-[#0F172A] border border-slate-800 rounded-xl p-5">
+            <h3 className="text-lg font-semibold mb-3">Missing Keywords</h3>
+
+            {keywords.length ? (
+              <div className="flex flex-wrap gap-2">
+                {keywords.map((k, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-white/10 rounded-full text-xs"
+                  >
+                    {k}
+                  </span>
                 ))}
-              </ul>
-            </div>
-          )}
-        </motion.div>
+              </div>
+            ) : (
+              <p className="text-green-400 text-sm">No missing keywords 🎉</p>
+            )}
+          </div>
+
+          {/* FIXES */}
+          <div className="bg-[#0F172A] border border-slate-800 rounded-xl p-5">
+            <h3 className="text-lg font-semibold mb-3">Quick Fixes</h3>
+
+            <ul className="space-y-2 text-gray-300 text-sm">
+              {fixes.map((f, i) => (
+                <li key={i}>• {f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

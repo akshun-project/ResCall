@@ -1,164 +1,158 @@
- import { useState } from "react";
-import { motion } from "framer-motion";
-import { Brain } from "lucide-react";
-import { ai } from "../gemini/geminiClient";
+ import { useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { getData, saveData } from "../utils/storage";
+import { useState, useEffect } from "react";
 
 export default function SkillPathPage() {
-  const [currentSkills, setCurrentSkills] = useState("");
-  const [targetRole, setTargetRole] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState("");
+  const { user } = useUser();
+  const navigate = useNavigate();
 
-  const generatePath = async () => {
-    if (!currentSkills.trim() || !targetRole.trim()) {
-      alert("Please enter skills and target role.");
-      return;
-    }
+  const userId = user?.id;
 
-    setLoading(true);
-    setResult("");
+  if (!userId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
 
-    try {
-      const prompt = `
-Generate a concise, premium, easy-to-understand skill gap & learning path.
+  const data = getData(`aiData_${userId}`);
 
-OUTPUT FORMAT (NO MARKDOWN, ONLY CLEAN TEXT):
+  if (!data) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-white">
+        <h2 className="text-lg font-semibold mb-2">
+          No Resume Found
+        </h2>
+        <button
+          onClick={() => navigate("/resume")}
+          className="bg-indigo-600 px-4 py-2 rounded"
+        >
+          Upload Resume →
+        </button>
+      </div>
+    );
+  }
 
-MISSING SKILLS
-TOP 5 PRIORITY SKILLS
-30-DAY LEARNING ROADMAP
-WEEKLY GOALS
-PROJECT TO BUILD
-FINAL ADVICE
+  const skills = data?.skills?.missing_skills || [];
+  const level = data?.skills?.level || "N/A";
 
-Current Skills:
-${currentSkills}
+  // 🔥 LOAD PROGRESS
+  const [completed, setCompleted] = useState(() => {
+    return getData(`skillProgress_${userId}`) || {};
+  });
 
-Target Role:
-${targetRole}
-`;
+  // 🔥 SAVE PROGRESS
+  useEffect(() => {
+    saveData(`skillProgress_${userId}`, completed);
+  }, [completed]);
 
-      const res = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-      });
-
-      const text =
-        res.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "No output generated.";
-
-      setResult(text);
-    } catch (err) {
-      console.error(err);
-      setResult("Something went wrong. Try again.");
-    }
-
-    setLoading(false);
+  const toggleSkill = (skill) => {
+    setCompleted((prev) => ({
+      ...prev,
+      [skill]: !prev[skill],
+    }));
   };
 
-  // Format AI text nicely
-  const formatOutput = (text) => {
-    const lines = text.split("\n").filter((l) => l.trim() !== "");
-
-    return lines.map((line, i) => {
-      if (line.endsWith(":") || line.startsWith("MISSING")) {
-        return (
-          <h3 key={i} className="text-lg font-semibold text-indigo-400 mt-4">
-            {line}
-          </h3>
-        );
-      }
-
-      if (line.startsWith("-") || line.startsWith("*")) {
-        return (
-          <p key={i} className="ml-4 text-gray-300">
-            • {line.replace(/[-*]/, "").trim()}
-          </p>
-        );
-      }
-
-      return (
-        <p key={i} className="text-gray-300 mt-2 leading-relaxed">
-          {line}
-        </p>
-      );
-    });
-  };
+  // 📊 PROGRESS %
+  const completedCount = Object.values(completed).filter(Boolean).length;
+  const progress = skills.length
+    ? Math.round((completedCount / skills.length) * 100)
+    : 0;
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white px-6 md:px-20 py-24">
+    <div className="min-h-screen bg-[#0B0F19] text-white px-4 py-10">
 
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-semibold mb-2"
-      >
-        Skill Gap & Learning Path AI
-      </motion.h1>
+      <div className="max-w-4xl mx-auto">
 
-      <p className="text-gray-300 mb-10 max-w-xl">
-        Identify missing skills and get a personalized, premium AI roadmap to reach your target role.
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-10">
-
-        {/* INPUT SECTION */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl"
-        >
-          <h2 className="text-xl font-semibold mb-4">Enter Details</h2>
-
-          <textarea
-            className="w-full h-32 bg-white/5 border border-white/10 rounded-xl 
-            px-4 py-3 text-gray-200 outline-none resize-none mb-4"
-            placeholder="Your current skills (comma separated)..."
-            onChange={(e) => setCurrentSkills(e.target.value)}
-          />
-
-          <textarea
-            className="w-full h-32 bg-white/5 border border-white/10 rounded-xl 
-            px-4 py-3 text-gray-200 outline-none resize-none"
-            placeholder="Target role (e.g., Frontend Developer)"
-            onChange={(e) => setTargetRole(e.target.value)}
-          />
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-6">
 
           <button
-            onClick={generatePath}
-            className="w-full mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 
-            rounded-lg active:scale-95 transition flex justify-center gap-3"
+            onClick={() => navigate(-1)}
+            className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm"
           >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Generating…
-              </span>
-            ) : (
-              "Generate Skill Path"
-            )}
+            ← Back
           </button>
-        </motion.div>
 
-        {/* RESULT SECTION */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="p-8 rounded-2xl bg-white/5 border border-white/10 
-          backdrop-blur-xl overflow-y-auto max-h-[600px]"
-        >
-          <h2 className="text-xl font-semibold mb-4">Your Learning Roadmap</h2>
+          <button
+            onClick={() => navigate("/resume")}
+            className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Re-analyze →
+          </button>
 
-          {loading ? (
-            <p className="text-gray-400 animate-pulse">Preparing your roadmap…</p>
-          ) : result ? (
-            <div>{formatOutput(result)}</div>
-          ) : (
-            <p className="text-gray-400">
-              Enter skills + target role to generate a custom learning plan.
-            </p>
-          )}
-        </motion.div>
+        </div>
+
+        <h1 className="text-3xl font-semibold mb-2">
+          Skill Roadmap 🧠
+        </h1>
+
+        <p className="text-gray-400 mb-6 text-sm">
+          Track your progress and improve step-by-step
+        </p>
+
+        {/* LEVEL */}
+        <div className="mb-6 p-5 bg-[#0F172A] border border-slate-800 rounded-xl">
+          <h2 className="text-gray-400 text-sm">Current Level</h2>
+          <p className="text-2xl text-indigo-400 font-semibold mt-2">
+            {level}
+          </p>
+        </div>
+
+        {/* PROGRESS BAR */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm mb-1">
+            <span>Progress</span>
+            <span>{progress}%</span>
+          </div>
+
+          <div className="w-full bg-gray-800 h-2 rounded-full">
+            <div
+              className="bg-indigo-500 h-2 rounded-full"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        {/* SKILLS */}
+        <div className="space-y-3 mb-10">
+          {skills.map((skill, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between bg-[#0F172A] p-4 rounded-lg border border-slate-800"
+            >
+              <span>{skill}</span>
+
+              <input
+                type="checkbox"
+                checked={!!completed[skill]}
+                onChange={() => toggleSkill(skill)}
+                className="w-5 h-5 accent-indigo-500"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* TIP */}
+        <div className="mb-8 p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+          <p className="text-sm text-gray-300">
+            Complete these skills step-by-step to improve your placement readiness.
+          </p>
+        </div>
+
+        {/* CTA */}
+       <div className="flex justify-center">
+   <div className="flex justify-center mt-6">
+  <button
+    onClick={() => navigate("/mock-interview")}
+    className="bg-green-500 hover:bg-green-600 px-8 py-2.5 rounded-lg"
+  >
+    Start Interview Practice →
+  </button>
+</div>
+</div>
 
       </div>
     </div>

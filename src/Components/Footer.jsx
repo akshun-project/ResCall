@@ -66,7 +66,7 @@ export default function Footer() {
       </div>
 
       <p className="text-center text-gray-500 text-xs mt-12">
-        © 2025 ResCall — Built with 💜 by the ResCall Team.
+        © 2026 ResCall — Built with 💜 by the ResCall Team.
       </p>
     </footer>
   );

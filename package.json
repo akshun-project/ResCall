@@ -15,9 +15,10 @@
     "@google/generative-ai": "^0.24.1",
     "@gsap/react": "2.1.2",
     "framer-motion": "12.23.24",
+    "jspdf": "^4.2.1",
     "lucide-react": "0.554.0",
-    "mammoth": "1.11.0",
-    "pdfjs-dist": "3.4.120",
+    "mammoth": "^1.11.0",
+    "pdfjs-dist": "^3.4.120",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-router-dom": "7.9.6"

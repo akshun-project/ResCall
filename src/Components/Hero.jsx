@@ -1,15 +1,17 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
+
 import {
   SignInButton,
   SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/clerk-react";
 
 export default function Hero() {
   const [openMenu, setOpenMenu] = useState(false);
-
+  const { user } = useUser();
   return (
     <>
       {/* GLOBAL FONT */}
@@ -21,7 +23,6 @@ export default function Hero() {
       </style>
 
       <section className="flex flex-col items-center text-white text-sm relative bg-[#0B0F19] overflow-hidden pb-20">
-
         {/* GRADIENT RING */}
         <svg
           className="absolute -z-10 w-full max-w-none -mt-60 sm:-mt-48 md:-mt-32 opacity-80"
@@ -55,9 +56,11 @@ export default function Hero() {
 
         {/* NAVBAR */}
         <nav className="z-50 sticky top-0 flex items-center justify-between w-full py-4 px-4 sm:px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur">
-
           {/* LOGO */}
-          <a href="/" className="text-2xl sm:text-3xl font-extrabold flex items-center tracking-tight">
+          <a
+            href="/"
+            className="text-2xl sm:text-3xl font-extrabold flex items-center tracking-tight"
+          >
             <span className="bg-gradient-to-r font-semibold from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               Res
             </span>
@@ -66,10 +69,18 @@ export default function Hero() {
 
           {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="/" className="hover:text-slate-300 transition">Home</a>
-            <a href="#tools" className="hover:text-slate-300 transition">Tools</a>
-            <a href="#features" className="hover:text-slate-300 transition">Features</a>
-            <a href="#about" className="hover:text-slate-300 transition">About</a>
+            <a href="/" className="hover:text-slate-300 transition">
+              Home
+            </a>
+            <a href="#tools" className="hover:text-slate-300 transition">
+              Tools
+            </a>
+            <a href="#features" className="hover:text-slate-300 transition">
+              Features
+            </a>
+            <a href="#about" className="hover:text-slate-300 transition">
+              About
+            </a>
           </div>
 
           {/* DESKTOP AUTH */}
@@ -109,10 +120,15 @@ export default function Hero() {
         {/* MOBILE OVERLAY */}
         {openMenu && (
           <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-lg flex flex-col items-center justify-center gap-8 text-lg">
-
-            <a href="#tools" onClick={() => setOpenMenu(false)}>Tools</a>
-            <a href="#features" onClick={() => setOpenMenu(false)}>Features</a>
-            <a href="#faq" onClick={() => setOpenMenu(false)}>FAQ</a>
+            <a href="#tools" onClick={() => setOpenMenu(false)}>
+              Tools
+            </a>
+            <a href="#features" onClick={() => setOpenMenu(false)}>
+              Features
+            </a>
+            <a href="#faq" onClick={() => setOpenMenu(false)}>
+              FAQ
+            </a>
 
             <SignedOut>
               <SignInButton mode="modal">
@@ -143,30 +159,31 @@ export default function Hero() {
         {/* STATUS TAG */}
         <div className="flex items-center mt-20 sm:mt-28 gap-2 border border-slate-600 text-gray-50 rounded-full px-4 py-2">
           <div className="size-2.5 bg-green-500 rounded-full" />
-          <span className="text-xs sm:text-sm">AI-powered tools for your career</span>
+          <span className="text-xs sm:text-sm">
+            AI-powered tools for your career
+          </span>
         </div>
 
         {/* HERO HEADING */}
         <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mt-4 max-w-3xl px-4">
-          Your{" "}
+          Crack Your{" "}
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            AI-Powered
+            Placement
           </span>{" "}
-          Resume, Career & Job Match{" "}
-          <span className="text-purple-300 font-semibold">Assistant</span>
+          with One Smart System
         </h1>
-
         {/* SUBTEXT */}
         <p className="text-center text-sm sm:text-base max-w-lg mt-3 text-gray-300 px-4">
-          Analyze your resume, compare job descriptions, discover skill gaps, and get a personalized career roadmap.
+          Analyze your resume, fix mistakes, learn missing skills, and prepare
+          for interviews — all connected in one flow.
         </p>
 
         {/* CTA BUTTONS */}
-        <div className="flex flex-wrap justify-center items-center gap-4 mt-8">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto justify-center items-center gap-3 mt-8">
           <SignedOut>
             <SignUpButton mode="modal">
               <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-11 rounded-lg active:scale-95 w-full sm:w-auto">
-                Start Analysis →
+                Analyze My Resume 
               </button>
             </SignUpButton>
 
@@ -176,14 +193,22 @@ export default function Hero() {
               </button>
             </SignInButton>
           </SignedOut>
-
           <SignedIn>
-            <a
-              href="/resume"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 h-11 rounded-lg active:scale-95 w-full sm:w-auto"
-            >
-              Continue Analysis →
-            </a>
+            {localStorage.getItem(`aiData_${user?.id}`) ? (
+              <a
+                href="/dashboard"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-11 flex items-center justify-center rounded-lg active:scale-95 w-full sm:w-auto"
+              >
+                Go to Dashboard →
+              </a>
+            ) : (
+              <a
+                href="/resume"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-11 flex items-center justify-center rounded-lg active:scale-95 w-full sm:w-auto"
+              >
+                Analyze Resume →
+              </a>
+            )}
           </SignedIn>
         </div>
 

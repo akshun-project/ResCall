@@ -1,4 +1,4 @@
- import { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { FileText, Upload } from "lucide-react";
 import { GlobalWorkerOptions, getDocument } from "pdfjs-dist/build/pdf";
@@ -126,7 +126,6 @@ ${jobText}
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white px-6 md:px-20 py-24">
-
       {/* TITLE */}
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
@@ -137,11 +136,11 @@ ${jobText}
       </motion.h1>
 
       <p className="text-gray-300 mb-10 max-w-xl">
-        Upload your resume, paste any job description, and get a match score + missing keywords + bullet point rewrites.
+        Upload your resume, paste any job description, and get a match score +
+        missing keywords + bullet point rewrites.
       </p>
 
       <div className="grid md:grid-cols-2 gap-10">
-
         {/* LEFT SECTION: INPUT */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -218,13 +217,10 @@ ${jobText}
               </div>
 
               {/* Output */}
-              <div className="space-y-2">
-                {formatOutput(result.text)}
-              </div>
+              <div className="space-y-2">{formatOutput(result.text)}</div>
             </>
           )}
         </motion.div>
-
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
  import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Interview from "./pages/Interview";
+import MockInterview from "./pages/MockInterview";
+import Dashboard from "./pages/Dashboard";
+
 // Components
 import Hero from "./Components/Hero";
 import ToolsSection from "./Components/ToolsSection";
@@ -34,9 +38,14 @@ function App() {
 
         {/* ---------------- TOOL PAGES ---------------- */}
         <Route path="/resume" element={<ResumePage />} />
-        <Route path="/matcher" element={<JobMatcherPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/ats" element={<ATSPage />} />
         <Route path="/skill-path" element={<SkillPathPage />} />
+        <Route path="/matcher" element={<JobMatcherPage />} />
+
+        {/* INTERVIEW */}
+        <Route path="/interview" element={<Interview />} />
+        <Route path="/mock-interview" element={<MockInterview />} />
 
       </Routes>
     </Router>
