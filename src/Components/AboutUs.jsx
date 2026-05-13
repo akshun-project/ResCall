@@ -20,29 +20,6 @@ export default function AboutUs() {
     },
   ];
 
-  const team = [
-    {
-      name: "Akshun Jindal",
-      role: "Frontend Developer",
-      desc: "Builds clean, fast, and responsive user interfaces focused on real user experience.",
-    },
-    {
-      name: "Akshat Kansal",
-      role: "Backend Developer",
-      desc: "Handles APIs, architecture, and ensures smooth integration of all AI-powered features.",
-    },
-    {
-      name: "Avee Singh",
-      role: "Design & UI/UX",
-      desc: "Designs intuitive layouts that make the platform simple, clean, and easy to use.",
-    },
-    {
-      name: "Ansh Goel",
-      role: "Product & Quality",
-      desc: "Focuses on testing, feature clarity, and making sure the product solves real problems.",
-    },
-  ];
-
   return (
     <section id="about" className="bg-[#0B0F19] text-white px-4 py-20">
       <div className="max-w-5xl mx-auto">
@@ -95,42 +72,47 @@ export default function AboutUs() {
           ))}
         </div>
 
-        {/* TEAM */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           className="text-xl md:text-2xl font-semibold text-center mt-16"
         >
-          Meet the{" "}
+          Built With{" "}
           <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-            Team
+            Purpose
           </span>
         </motion.h2>
 
-        <p className="text-center text-gray-400 text-sm mt-2 mb-8">
-          Built by a team focused on solving real placement problems faced by
-          students.
+        <p className="text-center text-gray-400 text-sm mt-2 mb-8 max-w-2xl mx-auto">
+          ResCall was built to help students understand where they stand,
+          improve their skills, and prepare confidently for placements through a
+          guided, practical system.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {team.map((member, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="p-5 bg-[#0F172A] border border-slate-800 rounded-xl hover:border-indigo-500 transition"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Users size={20} className="text-purple-400" />
-                <div>
-                  <h3 className="text-sm font-semibold">{member.name}</h3>
-                  <p className="text-xs text-gray-400">{member.role}</p>
-                </div>
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="p-6 bg-[#0F172A] border border-slate-800 rounded-xl hover:border-indigo-500 transition"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <Users size={22} className="text-purple-400" />
+
+              <div>
+                <h3 className="text-sm font-semibold">Akshun Jindal</h3>
+
+                <p className="text-xs text-gray-400">
+                  Creator & Full Stack Developer
+                </p>
               </div>
-              <p className="text-gray-400 text-sm">{member.desc}</p>
-            </motion.div>
-          ))}
+            </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Designed and developed ResCall with a strong focus on UI/UX,
+              accessibility, performance, and solving real placement challenges
+              faced by students.
+            </p>
+          </motion.div>
         </div>
       </div>
     </section>

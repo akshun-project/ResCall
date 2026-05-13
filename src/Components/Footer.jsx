@@ -39,14 +39,14 @@ export default function Footer() {
           <div className="flex md:flex-col flex-wrap items-center md:items-start gap-3 justify-center md:justify-start">
 
             <a
-              href="mailto:support@rescall.com"
+              href="akshunjindal7889@gmail.com"
               className="flex items-center gap-2 text-gray-300 hover:text-white transition text-sm"
             >
               <Mail size={16} /> support@rescall.com
             </a>
 
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/akshun-jindal-9534b0303/"
               target="_blank"
               className="flex items-center gap-2 text-gray-300 hover:text-white transition text-sm"
             >
@@ -54,7 +54,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://github.com"
+              href="https://github.com/akshun-project"
               target="_blank"
               className="flex items-center gap-2 text-gray-300 hover:text-white transition text-sm"
             >
